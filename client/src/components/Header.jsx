@@ -8,7 +8,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 export default function Header() {
   return (
-    <div className="w-full flex justify-between items-center px-[32px] py-[12px] sticky top-0 border-b-2">
+    <div className="w-full flex justify-between items-center px-[32px] py-[12px] sticky top-0 border-b-2 bg-white z-9999">
       <div className="flex gap-[12px]">
         <p>Payments</p>
         <p className="text-xs text-[#4D4D4D] flex items-center gap-[6px]">
