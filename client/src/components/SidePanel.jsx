@@ -70,7 +70,7 @@ export default function SidePanel() {
             <ListItemIcon sx={{ color: "white", minWidth:"0" }}>
               {item.icon}
             </ListItemIcon>
-            <ListItemText primary={item.name} />
+            <ListItemText primary={item.name} sx={{fontSize:"14px"}}/>
           </ListItemButton>
         ))}
       </div>

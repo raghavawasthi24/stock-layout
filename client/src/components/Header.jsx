@@ -16,7 +16,7 @@ export default function Header() {
           How it works
         </p>
       </div>
-      <div className="bg-[#F2F2F2] w-96 h-fit">
+      <div className="bg-[#F2F2F2] w-96 h-fit rounded-md">
         <IconButton type="button" sx={{}} aria-label="search">
           <SearchIcon />
         </IconButton>

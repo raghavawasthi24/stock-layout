@@ -10,7 +10,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Pagination } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+} from "@mui/material";
 import { getPayment } from "../actions/payment";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -26,8 +32,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 export default function Payments() {
   const [data, setData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1); // State to track the current page
-  const entriesPerPage = 10; // Number of entries per page
+  const [currentPage, setCurrentPage] = useState(1);
+  const entriesPerPage = 10;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,21 +49,18 @@ export default function Payments() {
     fetchData();
   }, []);
 
-  // Calculate the data to be displayed on the current page
   const indexOfLastEntry = currentPage * entriesPerPage;
   const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
   const currentData = data.slice(indexOfFirstEntry, indexOfLastEntry);
 
-  // Handle page change
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
   };
 
   return (
     <div className="bg-[#FAFAFA] flex flex-col gap-8 p-4">
-      <div>
-        <p>Overview</p>
-        <p></p>
+      <div className="flex justify-between">
+        <p className="font-semibold">Overview</p>
       </div>
 
       <div className="flex justify-between gap-[20px]">
