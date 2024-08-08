@@ -1,10 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
-import CampaignIcon from "@mui/icons-material/Campaign";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -13,37 +10,49 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-
+import { Pagination } from "@mui/material";
+import { getPayment } from "../actions/payment";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#F2F2F2",
-    color: 'black',
-    padding:'10px 12px'
+    color: "black",
+    padding: "10px 12px",
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
   },
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
- 
-}));
-
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
-
 export default function Payments() {
+  const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); // State to track the current page
+  const entriesPerPage = 10; // Number of entries per page
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await getPayment();
+        console.log(res);
+        setData(res.data);
+      } catch (error) {
+        alert("Couldn't get details!");
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Calculate the data to be displayed on the current page
+  const indexOfLastEntry = currentPage * entriesPerPage;
+  const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
+  const currentData = data.slice(indexOfFirstEntry, indexOfLastEntry);
+
+  // Handle page change
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
   return (
     <div className="bg-[#FAFAFA] flex flex-col gap-8 p-4">
       <div>
@@ -64,8 +73,8 @@ export default function Payments() {
 
       <div>Transactions | This Month</div>
 
-      <div className="bg-white p-3">
-        <div>
+      <div className="bg-white p-3 flex flex-col items-center gap-3">
+        <div className="w-full">
           <div className="border h-fit flex w-64">
             <IconButton type="button" sx={{}} aria-label="search">
               <SearchIcon />
@@ -76,36 +85,48 @@ export default function Payments() {
               inputProps={{ "aria-label": "search google maps" }}
             />
           </div>
-          <div></div>
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 700 }} aria-label="customized table">
-              <TableHead>
-                <TableRow sx={{padding:"10px"}}>
-                  <StyledTableCell>Order ID</StyledTableCell>
-                  <StyledTableCell align="right">Order Date</StyledTableCell>
-                  <StyledTableCell align="right">Order Amount</StyledTableCell>
+        </div>
+
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 700 }} aria-label="customized table">
+            <TableHead>
+              <TableRow sx={{ padding: "10px" }}>
+                <StyledTableCell>Order ID</StyledTableCell>
+                <StyledTableCell align="right">Order Date</StyledTableCell>
+                <StyledTableCell align="right">Order Amount</StyledTableCell>
+                <StyledTableCell align="right">
+                  Transaction fees
+                </StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {currentData.map((row) => (
+                <TableRow key={row.orderId}>
+                  <StyledTableCell component="th" scope="row">
+                    {row.orderId}
+                  </StyledTableCell>
                   <StyledTableCell align="right">
-                    Transaction fees
+                    {row.orderDate}
+                  </StyledTableCell>
+                  <StyledTableCell align="right">
+                    {row.orderAmount}
+                  </StyledTableCell>
+                  <StyledTableCell align="right">
+                    {row.transactionFees}
                   </StyledTableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row) => (
-                  <StyledTableRow key={row.name}>
-                    <StyledTableCell component="th" scope="row">
-                      {row.name}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      {row.calories}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                    <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <Pagination
+          count={Math.ceil(data.length / entriesPerPage)} // Calculate the number of pages
+          page={currentPage}
+          onChange={handlePageChange}
+          variant="outlined"
+          shape="rounded"
+        />
       </div>
     </div>
   );
