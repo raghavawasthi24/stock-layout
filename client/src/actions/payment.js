@@ -1,6 +1,6 @@
 export async function getPayment () {
     try{
-        const res = await fetch("http://localhost:5000/");
+        const res = await fetch("https://stock-layout.onrender.com");
         if(!res){
             throw new Error("Couldn't get details!")
         }
